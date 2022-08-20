@@ -1,4 +1,5 @@
 set(SOURCES
+    src/layout.cpp
     src/lexer.cpp
     src/scanner.cpp
     src/token.cpp

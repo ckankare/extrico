@@ -7,7 +7,7 @@ character_t Scanner::next() {
         return character_t();
     }
 
-    position_t pos{m_next};
+    position_t pos = m_next;
     character_t ret{pos, m_src[m_next]};
 
     ++m_next;
