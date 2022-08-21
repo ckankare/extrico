@@ -1,6 +1,7 @@
 set(SOURCES
     tests.cpp
     bits_view.cpp
+    layout.cpp
 )
 
 add_executable(tests ${SOURCES})

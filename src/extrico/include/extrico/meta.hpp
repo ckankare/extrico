@@ -5,6 +5,11 @@
 
 namespace utils {
 
+template <typename... Ts>
+struct overload : Ts... {
+    using Ts::operator()...;
+};
+
 template <typename T, typename... Ts>
 struct are_same : std::conjunction<std::is_same<T, Ts>...> {};
 
