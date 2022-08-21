@@ -1,4 +1,5 @@
 set(SOURCES
+    src/bits_view.cpp
     src/layout.cpp
     src/lexer.cpp
     src/scanner.cpp
