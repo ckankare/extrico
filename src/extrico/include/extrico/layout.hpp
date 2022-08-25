@@ -24,18 +24,21 @@ struct Member {
 };
 
 struct Value {
-    Type member;
+    Type type;
     uint64_t bits;
 };
 
 class Layout {
 public:
+    Layout(std::string name) : m_name(std::move(name)) {}
     void add_member(Member member);
     uint64_t bit_width() const { return m_total_bit_width; }
+    std::string to_string(std::span<Value> values) const;
 
     std::pair<std::vector<Value>, size_t> parse_bits(std::span<uint8_t> data, Endianess endianess) const;
 
 private:
+    std::string m_name;
     std::vector<Member> m_members;
     size_t m_total_bit_width = 0;
 };

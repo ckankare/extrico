@@ -7,7 +7,7 @@
 TEST_CASE("Layout parse_bits(), simple layout") {
     std::array<uint8_t, 3> data{0x5E, 0xB6, 0x9D};
     // 0101'1110'1011'0110'1001'1101
-    eto::Layout layout;
+    eto::Layout layout("s");
     layout.add_member(eto::Member{"foo", eto::Type{eto::BaseType::Unsigned, 3}});
     layout.add_member(eto::Member{"bar", eto::Type{eto::BaseType::Unsigned, 11}});
     layout.add_member(eto::Member{"baz", eto::Type{eto::BaseType::Unsigned, 4}});
