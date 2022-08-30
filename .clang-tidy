@@ -1,0 +1,14 @@
+Checks: >
+  -*,
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  misc-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-magic-numbers,
+WarningsAsErrors: ''
+HeaderFilterRegex: 'src'
+FormatStyle: none
