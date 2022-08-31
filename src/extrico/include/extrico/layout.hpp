@@ -31,6 +31,11 @@ struct Value {
 class Layout {
 public:
     Layout(std::string name) : m_name(std::move(name)) {}
+    std::string_view name() const { return m_name; }
+    std::size_t size() const { return m_members.size(); }
+
+    const Member& operator[](std::size_t index) const { return m_members[index]; }
+
     void add_member(Member member);
     uint64_t bit_width() const { return m_total_bit_width; }
     std::string to_string(std::span<Value> values) const;
