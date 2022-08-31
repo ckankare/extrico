@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <memory>
 
@@ -9,6 +10,8 @@ template <typename... Ts>
 struct overload : Ts... {
     using Ts::operator()...;
 };
+template <typename... Ts>
+overload(Ts...) -> overload<Ts...>;
 
 template <typename T, typename... Ts>
 struct are_same : std::conjunction<std::is_same<T, Ts>...> {};

@@ -2,6 +2,7 @@ set(SOURCES
     tests.cpp
     bits_view.cpp
     layout.cpp
+    parser.cpp
 )
 
 add_executable(tests ${SOURCES})

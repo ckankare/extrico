@@ -115,8 +115,6 @@ Token Lexer::next() {
         return Token(TokenType::Literal, std::move(value));
     }
 
-    assert(false); // FIXME
-
     return Token(TokenType::EndOfStream);
 }
 

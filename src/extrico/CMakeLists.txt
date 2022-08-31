@@ -2,6 +2,7 @@ set(SOURCES
     src/bits_view.cpp
     src/layout.cpp
     src/lexer.cpp
+    src/parser.cpp
     src/scanner.cpp
     src/token.cpp
 )

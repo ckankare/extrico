@@ -28,6 +28,13 @@ public:
     void consume() { (void)next(); }
 
     template <typename... Args>
+    bool consume_any(Args&&... token_types) {
+        const auto array = utils::make_array(std::forward<Args>(token_types)...);
+        auto consumed = next();
+        return consumed.is(std::forward<Args>(token_types)...);
+    }
+
+    template <typename... Args>
     std::optional<Token> next_if_any(Args&&... token_types) {
         const auto array = utils::make_array(std::forward<Args>(token_types)...);
         return next_if_any(array);
@@ -105,7 +112,8 @@ public:
         make_symbol(TokenType::RightArrow, '=', '>'),   make_symbol(TokenType::Equals, '=', '='),
     };
 
-    static constexpr std::array<std::pair<char, TokenType>, 14> symbols = {{
+    static constexpr std::array<std::pair<char, TokenType>, 15> symbols = {{
+        {':', TokenType::Colon},
         {';', TokenType::Semicolon},
         {'(', TokenType::LeftParenthesis},
         {')', TokenType::RightParenthesis},
@@ -122,7 +130,8 @@ public:
         {'$', TokenType::DollarSign},
     }};
     static constexpr std::array<char, 4> whitespace_char = {' ', '\t', '\n', '\r'};
-    static constexpr std::array<std::pair<std::string_view, TokenType>, 1> keywords = {{{"struct", TokenType::Struct}}};
+    static constexpr std::array<std::pair<std::string_view, TokenType>, 2> keywords = {
+        {{"struct", TokenType::Struct}, {"layout", TokenType::Layout}}};
     static constexpr bool is_whitespace(char character);
     static constexpr bool is_letter(char character);
     static constexpr bool is_numeric(char character);
