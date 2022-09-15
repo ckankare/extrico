@@ -57,7 +57,7 @@ namespace {
     }
 } // namespace
 
-void Layout::add_member(Member member) {
+void Layout::add_member(Member member) noexcept {
     m_total_bit_width +=
         std::visit(utils::overload{[&](const Type& type) { return static_cast<uint64_t>(type.bit_width); },
                                    [&](const Layout* layout) { return layout->bit_width(); }},
@@ -65,7 +65,7 @@ void Layout::add_member(Member member) {
     m_members.push_back(std::move(member));
 }
 
-std::string Layout::to_string(std::span<Value> values) const {
+std::string Layout::to_string(std::span<Value> values) const noexcept {
     std::string result = m_name + " = {\n";
 
     auto member = m_members.begin();
@@ -86,7 +86,7 @@ std::string Layout::to_string(std::span<Value> values) const {
     return result;
 }
 
-std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data, Endianess endianess) const {
+std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data, Endianess endianess) const noexcept {
     assert(endianess == Endianess::Big);
     std::vector<Value> values;
 

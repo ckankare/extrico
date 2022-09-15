@@ -30,17 +30,17 @@ struct Value {
 
 class Layout {
 public:
-    Layout(std::string name) : m_name(std::move(name)) {}
+    Layout(std::string name) noexcept : m_name(std::move(name)) {}
     std::string_view name() const { return m_name; }
     std::size_t size() const { return m_members.size(); }
 
-    const Member& operator[](std::size_t index) const { return m_members[index]; }
+    const Member& operator[](std::size_t index) const noexcept { return m_members[index]; }
 
-    void add_member(Member member);
-    uint64_t bit_width() const { return m_total_bit_width; }
-    std::string to_string(std::span<Value> values) const;
+    void add_member(Member member) noexcept;
+    uint64_t bit_width() const noexcept { return m_total_bit_width; }
+    std::string to_string(std::span<Value> values) const noexcept;
 
-    std::pair<std::vector<Value>, size_t> parse_bits(std::span<uint8_t> data, Endianess endianess) const;
+    std::pair<std::vector<Value>, size_t> parse_bits(std::span<uint8_t> data, Endianess endianess) const noexcept;
 
 private:
     std::string m_name;

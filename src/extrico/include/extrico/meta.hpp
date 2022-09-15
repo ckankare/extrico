@@ -30,8 +30,4 @@ constexpr T1 unique_cast(std::unique_ptr<T2>& ptr) {
     return dynamic_cast<T1>(ptr.get());
 }
 
-template <typename T1, typename T2>
-constexpr const T1 unique_cast(const std::unique_ptr<T2>& ptr) {
-    return dynamic_cast<T1>(ptr.get());
-}
 } // namespace utils
