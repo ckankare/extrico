@@ -1,4 +1,5 @@
 add_subdirectory(extrico)
+add_subdirectory(app)
 
 add_executable(extrico main.cpp)
 
