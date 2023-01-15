@@ -10,21 +10,25 @@ Window {
     minimumWidth: 400
     minimumHeight: 200
 
-    HexHighlighter {
-        id: hexHighlighter
-
-        textDocument: textEdit.textDocument
-    }
-
     LayoutHighlighter {
         id: layoutHighlighter
 
         textDocument: layoutEdit.textDocument
     }
 
+    HexHighlighter {
+        id: hexHighlighter
+
+        textDocument: dataEdit.textDocument
+    }
+
     SplitView {
         anchors.fill: parent
         orientation: Qt.Vertical
+
+        Parser {
+            id: parser
+        }
 
         SplitView {
             SplitView.minimumHeight: 50
@@ -41,8 +45,9 @@ Window {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 font: fixedFont
-                text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, " + "sed do eiusmod tempor incididunt ut labore et dolore magna " + "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco laboris nisi ut aliquip ex ea commodo cosnsequat. "
+                text: "layout foo {\n  bar: i32;\n};"
                 color: "green"
+                onTextChanged: parser.layoutChanged(text)
             }
 
             Editor {
@@ -55,20 +60,30 @@ Window {
                 Layout.minimumHeight: 50
                 color: "red"
                 font: fixedFont
-                text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, " + "sed do eiusmod tempor incididunt ut labore et dolore magna " + "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco laboris nisi ut aliquip ex ea commodo cosnsequat. "
+                text: ""
+
+                Connections {
+                    function onValueChange(text) {
+                        contentEdit.text = text;
+                    }
+
+                    target: parser
+                }
+
             }
 
         }
 
         Editor {
-            id: textEdit
+            id: dataEdit
 
             Layout.fillWidth: true
             Layout.fillHeight: true
             SplitView.minimumHeight: 50
             color: "blue"
             font: fixedFont
-            text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, " + "sed do eiusmod tempor incididunt ut labore et dolore magna " + "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco laboris nisi ut aliquip ex ea commodo cosnsequat. "
+            text: "0x1234'5678"
+            onTextChanged: parser.dataChanged(text)
         }
 
     }

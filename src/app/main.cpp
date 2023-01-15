@@ -8,7 +8,8 @@
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 
-#include <iostream>
+#include "extrico/parse.hpp"
+#include "extrico/parser.hpp"
 
 struct HighlightingRule {
     QRegularExpression pattern;
@@ -116,6 +117,47 @@ private:
     std::vector<HighlightingRule> m_rules;
 };
 
+class Parser : public QObject {
+    Q_OBJECT
+public:
+    explicit Parser(QObject* parent = 0) : QObject(parent) {}
+signals:
+    void layoutChange(const QString& text);
+    void dataChange(const QString& text);
+    void valueChange(const QString& text);
+public slots:
+    void layoutChanged(const QString& text) {
+        const auto raw_text = text.toUtf8().toStdString();
+
+        eto::Parser parser(raw_text);
+        m_layout = parser.parse();
+
+        parseData();
+    }
+    void dataChanged(const QString& text) {
+        const auto raw_text = text.toUtf8().toStdString();
+
+        m_data = eto::parse_hex_string(raw_text);
+
+        parseData();
+    }
+
+private:
+    void parseData() {
+        if (!m_layout) {
+            m_result = "{}";
+        } else {
+            auto [values, end] = m_layout->parse_bits(m_data, eto::Endianess::Big);
+            m_result = m_layout->to_string(values);
+        }
+
+        emit valueChange(QString::fromStdString(m_result));
+    }
+    std::unique_ptr<eto::Layout> m_layout;
+    std::vector<uint8_t> m_data;
+    std::string m_result;
+};
+
 #include "main.moc"
 
 int main(int argc, char* argv[]) {
@@ -123,6 +165,7 @@ int main(int argc, char* argv[]) {
 
     qmlRegisterType<HexHighlighter>("extrico", 1, 0, "HexHighlighter");
     qmlRegisterType<LayoutHighlighter>("extrico", 1, 0, "LayoutHighlighter");
+    qmlRegisterType<Parser>("extrico", 1, 0, "Parser");
 
     QQmlApplicationEngine engine;
     const auto fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
