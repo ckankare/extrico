@@ -92,11 +92,17 @@ std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data
 
     BitsView view(data);
     std::size_t end = 0;
+    bool exit = false;
     for (const auto& member : m_members) {
         std::visit(utils::overload{[&](const Type& type) {
                                        auto bits = view.get_bits(end, end + type.bit_width);
-                                       // FIXME Handle correctly.
-                                       assert(bits.has_value());
+                                       if (!bits) {
+                                           // TODO Try to propagate the error somehow, so it is
+                                           // then visible or something.
+                                           exit = true;
+                                           return;
+                                       }
+
                                        end += type.bit_width;
                                        values.push_back(Value{type, *bits});
                                    },
@@ -106,7 +112,7 @@ std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data
                                        end += layout->bit_width();
                                    }},
                    member.type);
-        if (end >= data.size() * 8) {
+        if (exit || end >= data.size() * 8) {
             break;
         }
     }

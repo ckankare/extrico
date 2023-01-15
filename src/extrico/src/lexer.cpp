@@ -78,7 +78,9 @@ Token Lexer::next() {
                 value += next.character;
             }
         }
-        assert(false); // TODO Detect and handle errors.
+
+        // TODO This is actually an error, which we maybe should handle some other way?
+        return {TokenType::StringLiteral, std::move(value)};
     }
 
     if (is_numeric(c)) {

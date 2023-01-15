@@ -3,7 +3,8 @@
 namespace eto {
 
 std::optional<std::uint64_t> BitsView::get_bits(std::size_t begin, std::size_t end) const {
-    if (end <= begin || end - begin > 64) {
+
+    if (end > m_count || end <= begin || end - begin > 64) {
         return {};
     }
 
