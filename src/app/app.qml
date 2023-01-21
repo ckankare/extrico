@@ -1,3 +1,4 @@
+import Qt.labs.settings
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -105,6 +106,15 @@ Window {
 
         }
 
+    }
+
+    Settings {
+        property alias dataField: dataEdit.text
+        property alias layoutField: layoutEdit.text
+        property alias windowX: root.x
+        property alias windowY: root.y
+        property alias windowWidth: root.width
+        property alias windowHeight: root.height
     }
 
 }

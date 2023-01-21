@@ -250,6 +250,9 @@ private:
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
 
+    app.setOrganizationName("extrico");
+    app.setApplicationName("extrico");
+
     qmlRegisterType<HexHighlighter>("extrico", 1, 0, "HexHighlighter");
     qmlRegisterType<LayoutHighlighter>("extrico", 1, 0, "LayoutHighlighter");
     qmlRegisterType<SpanHighlighter>("extrico", 1, 0, "SpanHighlighter");
