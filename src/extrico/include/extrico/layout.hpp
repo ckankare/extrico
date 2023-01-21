@@ -30,6 +30,8 @@ struct Value {
 
 class Layout {
 public:
+    enum class ParseResult { Full, Excess, Error };
+
     Layout(std::string name) noexcept : m_name(std::move(name)) {}
     std::string_view name() const { return m_name; }
     std::size_t size() const { return m_members.size(); }
@@ -40,7 +42,8 @@ public:
     uint64_t bit_width() const noexcept { return m_total_bit_width; }
     std::string to_string(std::span<Value> values) const noexcept;
 
-    std::pair<std::vector<Value>, size_t> parse_bits(std::span<uint8_t> data, Endianess endianess) const noexcept;
+    std::tuple<std::vector<Value>, size_t, ParseResult> parse_bits(std::span<uint8_t> data,
+                                                                   Endianess endianess) const noexcept;
 
 private:
     std::string m_name;

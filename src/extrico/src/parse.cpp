@@ -36,10 +36,12 @@ namespace {
     }
 } // namespace
 
-std::vector<uint8_t> parse_hex_string(std::string_view str) {
+std::pair<std::vector<uint8_t>, std::vector<size_t>> parse_hex_string(std::string_view str) {
     std::vector<uint8_t> result;
+    std::vector<size_t> mapping;
 
     size_t index = 0;
+
     index = next_valid_hex(str, index);
     if (is_header_hex(str, index)) {
         index += 2;
@@ -50,11 +52,14 @@ std::vector<uint8_t> parse_hex_string(std::string_view str) {
 
         if (!is_valid_hex(str[index + 1])) {
             result.push_back(upper * 16);
+            mapping.push_back(index);
             break;
         }
 
         auto lower = from_hex(str[index + 1]);
         result.push_back(upper * 16 + lower);
+        mapping.push_back(index);
+        mapping.push_back(index + 1);
 
         index = next_valid_hex(str, index + 2);
 
@@ -63,6 +68,6 @@ std::vector<uint8_t> parse_hex_string(std::string_view str) {
         }
     }
 
-    return result;
+    return {std::move(result), std::move(mapping)};
 }
 } // namespace eto

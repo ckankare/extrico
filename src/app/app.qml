@@ -16,8 +16,8 @@ Window {
         textDocument: layoutEdit.textDocument
     }
 
-    HexHighlighter {
-        id: hexHighlighter
+    SpanHighlighter {
+        id: spanHighlighter
 
         textDocument: dataEdit.textDocument
     }
@@ -77,13 +77,32 @@ Window {
         Editor {
             id: dataEdit
 
+            property bool blockedDataChanged: false
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             SplitView.minimumHeight: 50
             color: "blue"
             font: fixedFont
             text: "0x1234'5678"
-            onTextChanged: parser.dataChanged(text)
+            onTextChanged: {
+                if (!dataEdit.blockedDataChanged)
+                    parser.dataChanged(text);
+
+            }
+
+            Connections {
+                function onDataUsedChanged(start, end, spanType) {
+                    if (!dataEdit.blockedDataChanged) {
+                        dataEdit.blockedDataChanged = true;
+                        spanHighlighter.spanChanged(start, end, spanType);
+                    }
+                    dataEdit.blockedDataChanged = false;
+                }
+
+                target: parser
+            }
+
         }
 
     }

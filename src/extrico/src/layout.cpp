@@ -86,20 +86,27 @@ std::string Layout::to_string(std::span<Value> values) const noexcept {
     return result;
 }
 
-std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data, Endianess endianess) const noexcept {
+std::tuple<std::vector<Value>, size_t, Layout::ParseResult> Layout::parse_bits(std::span<uint8_t> data,
+                                                                               Endianess endianess) const noexcept {
     assert(endianess == Endianess::Big);
     std::vector<Value> values;
 
     BitsView view(data);
     std::size_t end = 0;
-    bool exit = false;
+    bool error = false;
+    ParseResult parse_result = ParseResult::Full;
     for (const auto& member : m_members) {
+        if (end >= data.size() * 8) {
+            parse_result = ParseResult::Error;
+            break;
+        }
+
         std::visit(utils::overload{[&](const Type& type) {
                                        auto bits = view.get_bits(end, end + type.bit_width);
                                        if (!bits) {
                                            // TODO Try to propagate the error somehow, so it is
                                            // then visible or something.
-                                           exit = true;
+                                           error = true;
                                            return;
                                        }
 
@@ -107,16 +114,25 @@ std::pair<std::vector<Value>, size_t> Layout::parse_bits(std::span<uint8_t> data
                                        values.push_back(Value{type, *bits});
                                    },
                                    [&](const Layout* layout) {
-                                       auto [sub_values, sub_count] = layout->parse_bits(data.subspan(end), endianess);
+                                       auto [sub_values, sub_count, sub_result] =
+                                           layout->parse_bits(data.subspan(end), endianess);
                                        std::move(sub_values.begin(), sub_values.end(), std::back_inserter(values));
                                        end += layout->bit_width();
+                                       if (sub_result == ParseResult::Error) {
+                                           error = true;
+                                       }
                                    }},
                    member.type);
-        if (exit || end >= data.size() * 8) {
+        if (error) {
+            parse_result = ParseResult::Error;
             break;
         }
     }
 
-    return {std::move(values), end};
+    if (parse_result != ParseResult::Error && end < data.size() * 8) {
+        parse_result = ParseResult::Excess;
+    }
+
+    return {std::move(values), end, parse_result};
 }
 } // namespace eto

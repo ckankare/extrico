@@ -5,5 +5,5 @@
 
 namespace eto {
 
-std::vector<uint8_t> parse_hex_string(std::string_view str);
+std::pair<std::vector<uint8_t>, std::vector<size_t>> parse_hex_string(std::string_view str);
 } // namespace eto

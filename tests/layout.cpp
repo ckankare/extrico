@@ -12,7 +12,7 @@ TEST_CASE("Layout parse_bits(), simple layout") {
     layout.add_member(eto::Member{"bar", eto::Type{eto::BaseType::Unsigned, 11}});
     layout.add_member(eto::Member{"baz", eto::Type{eto::BaseType::Unsigned, 4}});
 
-    auto [values, end] = layout.parse_bits(data, eto::Endianess::Big);
+    auto [values, end, error] = layout.parse_bits(data, eto::Endianess::Big);
 
     REQUIRE(values.size() == 3);
     CHECK(end == 18);
